@@ -44,8 +44,8 @@ public:
   ~DtaLinuxBlockStorageDevice(){}
 
 
-  static bool identify(OSDEVICEHANDLE osDeviceHandle,
-                       InterfaceDeviceID & interfaceDeviceIdentification,
-                       DTA_DEVICE_INFO & device_info);
+  static bool __identify(OSDEVICEHANDLE osDeviceHandle,
+                         InterfaceDeviceID & interfaceDeviceIdentification,
+                         DTA_DEVICE_INFO & device_info);
 
 };

@@ -38,7 +38,7 @@ DtaLinuxBlockStorageDevice::getDtaLinuxBlockStorageDevice(const char * devref, D
   InterfaceDeviceID interfaceDeviceIdentification;
 
   //
-  if (! identify(osDeviceHandle, interfaceDeviceIdentification, device_info)) {
+  if (!__identify(osDeviceHandle, interfaceDeviceIdentification, device_info)) {
     device_info.devType = DEVICE_TYPE_OTHER;
     LOG(E) << " Device " << devref << " is NOT Block Storage Device?! -- file handle " << HEXON(2) << (size_t) osDeviceHandle;
     OS.closeDeviceHandle(osDeviceHandle);
@@ -50,9 +50,9 @@ DtaLinuxBlockStorageDevice::getDtaLinuxBlockStorageDevice(const char * devref, D
 
 
 
-bool DtaLinuxBlockStorageDevice::identify(OSDEVICEHANDLE osDeviceHandle,
-                                          InterfaceDeviceID & /* interfaceDeviceIdentification */,
-                                          DTA_DEVICE_INFO & device_info)
+bool DtaLinuxBlockStorageDevice::__identify(OSDEVICEHANDLE osDeviceHandle,
+                                            InterfaceDeviceID & /* interfaceDeviceIdentification */,
+                                            DTA_DEVICE_INFO & device_info)
 {
   return true;
 }

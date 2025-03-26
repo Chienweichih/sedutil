@@ -234,13 +234,14 @@ typedef __signed__ int __s32;
 typedef unsigned int __u32;
 
 #ifdef __GNUC__
-__extension__ typedef __signed__ long long __s64;
-__extension__ typedef unsigned long long __u64;
+__extension__ typedef __signed__ long __s64;
+__extension__ typedef unsigned long __u64;
 #else
-typedef __signed__ long long __s64;
-typedef unsigned long long __u64;
+typedef __signed__ long __s64;
+typedef unsigned long __u64;
 #endif
-
+static_assert(sizeof(__s64)== 8, "sizeof __s64 is not 8 bytes");
+static_assert(sizeof(__u64)== 8, "sizeof __u64 is not 8 bytes");
 
 /**
  * From /usr/include/linux/nvme_ioctl.h
