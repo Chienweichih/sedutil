@@ -1,5 +1,12 @@
 sedutil is built using autotools and make.
-steps:
+
+Depending on the distribution, you might need to download some of thises.
+For instance, in a new Fedora 42 running ppc64le, this `dnf` command:
+
+sudo dnf install autoconf make g++ automake systemd-devel libnvme-devel
+
+
+Actual building steps:
 autoreconf -i
 ./configure --enable-silent-rules
 make
