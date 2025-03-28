@@ -101,21 +101,23 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
 
     struct stat s;
     stat(devref.c_str(), &s);
-    // LOG(E) << devref
-    //        << " st_ino:" << HEXON(4) << s.st_ino
-    //        << " st_dev:" << HEXON(4) << s.st_dev
-    //        << " st_rdev:" << HEXON(4) << s.st_rdev
-    //        << " st_rdev>>8:" << HEXON(4) << (s.st_rdev>>8)
-    //        << " st_rdev&0xF:" << HEXON(4) << (s.st_rdev & 0x000F)
-    //   ;
+    LOG(D4) << devref
+            << " st_ino:" << HEXON(4) << s.st_ino
+            << " st_dev:" << HEXON(4) << s.st_dev
+            << " st_rdev:" << HEXON(4) << s.st_rdev
+            << " st_rdev>>8:" << HEXON(4) << (s.st_rdev>>8)
+            << " st_rdev&0xF:" << HEXON(4) << (s.st_rdev & 0x000F)
+      ;
     const unsigned long device_type=s.st_rdev >> 8;
     const unsigned char device_part=s.st_rdev & 15;
     typedef enum _rdev_type {
       SCSI_DRIVE=8,
+      VIRT_DRIVE=253,
       NVME_DRIVE=259,
     } rdev_type;
     if (device_part==0 &&
         (device_type==rdev_type::SCSI_DRIVE ||
+         device_type==rdev_type::VIRT_DRIVE ||
          device_type==rdev_type::NVME_DRIVE)) {
       // LOG(E) << devref << " accepted."
       //   ;

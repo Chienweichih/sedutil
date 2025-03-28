@@ -86,7 +86,6 @@ uint8_t DtaNvmeDrive::sendCmd(ATACOMMAND cmd,
   if (err < 0)
     return static_cast<uint8_t>(errno);
   else if (err != 0) {
-    //fprintf(stderr, "NVME Security Command Error:%d\n", err);
     LOG(D4) << "NVME Security Command Error: " << err ;
     IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
   } else {
@@ -156,7 +155,7 @@ bool _NvmeIdentify(const char * variant_name, uint32_t namespace_id, uint8_t sub
 
   uint32_t status;
   int err;
-    
+
   err = OS.PerformNVMeCommand(osDeviceHandle, reinterpret_cast<uint8_t *>(&cmd), &status);
   if (err) {
     device_info.devType = DEVICE_TYPE_OTHER;
