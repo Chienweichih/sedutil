@@ -741,3 +741,5 @@ inline unsigned char hex_digit_to_nybble(char ch)
     default: return 0xff;  // throw invalid_argument();
     }
 }
+
+#define responseYN(n) (response.getUint8(n) ? " Y " : " N ")

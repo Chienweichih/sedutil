@@ -566,19 +566,21 @@ uint8_t DtaDevPyrite::listLockingRanges(char * password, int16_t rangeid, uint8_
     //LOG(D) << "LR" << i << " Begin " << response.getUint64(4) <<
     cout << "LR" << i << " Begin " << response.getUint64(4) <<
       " for " << response.getUint64(8);
-    //LOG(D)	<< "            RLKEna =" << (response.getUint8(12) ? " Y " : " N ") <<
+    //LOG(D)	<< "            RLKEna =" << responseYN(12) <<
     // 12 blank space --> 1 space
-    cout	<< " RLKEna =" << (response.getUint8(12) ? " Y " : " N ") <<
-      " WLKEna =" << (response.getUint8(16) ? " Y " : " N ") <<
-      " RLocked =" << (response.getUint8(20) ? " Y " : " N ") <<
-      " WLocked =" << (response.getUint8(24) ? " Y " : " N ");
+    cout << " RLKEna ="  << responseYN(12)
+         << " WLKEna ="  << responseYN(16)
+         << " RLocked =" << responseYN(20)
+         << " WLocked =" << responseYN(24) ;
   }
   delete session;
   LOG(D1) << "Exiting DtaDevPyrite:listLockingRanges() " << dev;
   return 0;
 }
+
+
 uint8_t DtaDevPyrite::setupLockingRange(uint8_t lockingrange, uint64_t start,
-                                      uint64_t length, char * password)
+                                        uint64_t length, char * password)
 {
   uint8_t lastRC;
   LOG(D1) << "Entering DtaDevPyrite:setupLockingRange()" << dev;

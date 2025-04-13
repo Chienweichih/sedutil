@@ -61,7 +61,7 @@ BEGIN_OPTION(listLockingRange, 3)
     OPTION_IS(password)
     OPTION_IS(device)
     USAGE_IS(R"-(
---listLockingRange <lockingRange< <password> <device>
+--listLockingRange <lockingRange> <password> <device>
                                 List specific Locking Range
                                 0 = GLobal   1..n = LRn
 )-")

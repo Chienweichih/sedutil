@@ -101,20 +101,28 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
 
     struct stat s;
     stat(devref.c_str(), &s);
-    LOG(D4) << devref
-            << " st_ino:" << HEXON(4) << s.st_ino
-            << " st_dev:" << HEXON(4) << s.st_dev
-            << " st_rdev:" << HEXON(4) << s.st_rdev
-            << " st_rdev>>8:" << HEXON(4) << (s.st_rdev>>8)
-            << " st_rdev&0xF:" << HEXON(4) << (s.st_rdev & 0x000F)
-      ;
     const unsigned long device_type=s.st_rdev >> 8;
-    const unsigned char device_part=s.st_rdev & 15;
+    const unsigned char device_part=s.st_rdev & 0x000F;
     typedef enum _rdev_type {
       SCSI_DRIVE=8,
       VIRT_DRIVE=253,
       NVME_DRIVE=259,
     } rdev_type;
+
+    LOG(D4) << devref
+            << " st_ino:" << HEXON(4) << s.st_ino
+            << " st_dev:" << HEXON(4) << s.st_dev
+            << " st_rdev:" << HEXON(4) << s.st_rdev
+            << " device type (st_rdev>>8):" << HEXON(2) << (s.st_rdev>>8)
+            << " device part (st_rdev&0xF):" << HEXON(1) << (s.st_rdev & 0x000F)
+            << (device_part==0
+                ? (device_type==rdev_type::SCSI_DRIVE ? " SCSI" :
+                   device_type==rdev_type::VIRT_DRIVE ? " VIRT" :
+                   device_type==rdev_type::NVME_DRIVE ? " NVMe" :
+                   "")
+                : "")
+      ;
+
     if (device_part==0 &&
         (device_type==rdev_type::SCSI_DRIVE ||
          device_type==rdev_type::VIRT_DRIVE ||
@@ -427,14 +435,12 @@ int DtaLinux::PerformSCSICommand(OSDEVICEHANDLE osDeviceHandle,
   }
   LOG(D4) << " DtaLinux::PerformSCSICommand calling ioctl ...";
   int kernResult = ioctl(handleDescriptor(osDeviceHandle), SG_IO, &sg);
+  LOG(D4) << " DtaLinux::PerformSCSICommand ioctl kernResult=" << HEXON(8) << kernResult ;
   if (0 != kernResult) {
     LOG(E) << "DtaLinux::PerformSCSICommand:: ioctl(" << handleDescriptor(osDeviceHandle)
            << ", ...) failed with kernResult " << HEXON(8) << kernResult;
     LOG(E) << "DtaLinux::PerformSCSICommand:: sg.masked_status=" << (int)sg.masked_status;
-  }
-  LOG(D4) << " DtaLinux::PerformSCSICommand ioctl kernResult=" << HEXON(8) << kernResult ;
-  IFLOG(D4) {
-    if (0 != kernResult) {
+    IFLOG(D4) {
       LOG(D4) << " DtaLinux::PerformSCSICommand cdb after ioctl returned "
               << HEXON(8) << kernResult << " (" << strerror(kernResult) << ")" ;
       DtaHexDump(cdb, cdb_len);
@@ -499,16 +505,13 @@ int DtaLinux::PerformNVMeCommand(OSDEVICEHANDLE osDeviceHandle,
   }
   LOG(D4) << " DtaLinux::PerformNVMeCommand calling ioctl ...";
   int kernResult =  ioctl(handleDescriptor(osDeviceHandle), NVME_IOCTL_ADMIN_CMD, &cmd);
+  LOG(D4) << " DtaLinux::PerformNVMeCommand ioctl kernResult=" << HEXON(8) << kernResult ;
 
   if (0 != kernResult) {
-    LOG(E) << "DtaLinux::PerformNVMeCommand:: ioctl(" << handleDescriptor(osDeviceHandle)
-           << ", ...) failed with kernResult " << HEXON(8) << kernResult;
-  }
-  LOG(D4) << " DtaLinux::PerformNVMeCommand ioctl kernResult=" << HEXON(8) << kernResult ;
-  IFLOG(D4) {
-    if (0 != kernResult) {
-      LOG(D4) << " DtaLinux::PerformNVMeCommand cmd after ioctl returned "
-              << HEXON(8) << kernResult << " (" << strerror(kernResult) << ")" ;
+    IFLOG(D4) {
+      LOG(D4) << "DtaLinux::PerformNVMeCommand:: ioctl(osDeviceHandle=" << handleDescriptor(osDeviceHandle)
+              << ", ...) failed with kernResult " << HEXON(8) << kernResult << " (" << strerror(kernResult) << ")" ;
+      LOG(D4) << " cmd:" ;
       DtaHexDump(&cmd, sizeof(cmd));
     }
   }

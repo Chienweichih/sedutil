@@ -497,6 +497,8 @@ DtaDevOpal::lrStatus_t DtaDevOpal::getLockingRange_status(uint8_t lockingrange, 
   LOG(D1) << "Exiting DtaDevOpal:getLockingRange_status() " << dev;
   return lrStatus;
 }
+
+
 uint8_t DtaDevOpal::listLockingRanges(char * password, int16_t rangeid, uint8_t idx)
 {
   uint8_t lastRC;
@@ -517,27 +519,17 @@ uint8_t DtaDevOpal::listLockingRanges(char * password, int16_t rangeid, uint8_t 
     delete session;
     return lastRC;
   }
+
   vector<uint8_t> table;
   table.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
   for (int i = 0; i < 8; i++) {
     table.push_back(OPALUID[OPAL_UID::OPAL_LOCKING_INFO_TABLE][i]);
   }
+
   if ((lastRC = getTable(table, _OPAL_TOKEN::MAXRANGES, _OPAL_TOKEN::MAXRANGES)) != 0) {
     delete session;
     return lastRC;
   }
-  uint32_t tc;
-  // dump raw token info
-  //tc = response.getTokenCount();
-  //if (0) {
-  //	printf("***** getTokenCount()=%ld\n", (long)tc);
-  //	for (uint32_t i = 0; i < tc; i++) {
-  //		printf("token %ld = ", (long)i);
-  //		for (uint32_t j = 0; j < response.getRawToken(i).size(); j++)
-  //			printf("%02X ", response.getRawToken(i)[j]);
-  //		cout << endl;
-  //	}
-  //}
 
   if (response.tokenIs(4) != _OPAL_TOKEN::DTA_TOKENID_UINT) {
     LOG(E) << "Unable to determine number of ranges " << dev;
@@ -545,38 +537,54 @@ uint8_t DtaDevOpal::listLockingRanges(char * password, int16_t rangeid, uint8_t 
     return DTAERROR_NO_LOCKING_INFO;
   }
   LOG(D) << "Locking Range Configuration for " << dev;
-  uint32_t numRanges = response.getUint32(4) + 1;
-  for (uint32_t i = 0; i < numRanges; i++){
-    if(0 != i) LR[8] = i & 0xff;
+  int16_t firstRange=0, lastRange = static_cast<int16_t>(response.getUint32(4));
+  if (rangeid != -1) {
+    if (! (firstRange <= rangeid && rangeid <= lastRange) ) {
+      LOG(E) << "Requested range " << rangeid << "is not -1 nor a valid range in 0.." << lastRange;
+      delete session;
+      return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
+    firstRange=lastRange=rangeid;
+  }
+
+  for (int16_t i = firstRange; i <=lastRange; i++){
+
+    if(0 != i) {
+      LR[6] = 0x03;  // non global ranges are 00000802000300nn
+      LR[8] = i & 0xff;
+    }
 
     if ((lastRC = getTable(LR, _OPAL_TOKEN::RANGESTART, _OPAL_TOKEN::WRITELOCKED)) != 0) {
       delete session;
       return lastRC;
     }
 
-    tc = response.getTokenCount();
-
-    if (tc != 34) { // why ?????
-      cout << endl;
-      LOG(E) << "token count is wrong. Exit loop " << dev;
-      break;
+    IFLOG(D4) {
+      if (response.getTokenCount() != 34) { // why ?????
+        cout << endl;
+        LOG(E) << "*** INVALID DEVICE REPONSE TO LOCKING RANGE CONFIGURATION *** :: token count is wrong. Exiting on " << dev;
+        delete session;
+        exit(-1);
+      }
     }
 
-    LR[6] = 0x03;  // non global ranges are 00000802000300nn
     //LOG(D) << "LR" << i << " Begin " << response.getUint64(4) <<
     cout << "LR" << i << " Begin " << response.getUint64(4) <<
       " for " << response.getUint64(8);
-    //LOG(D)	<< "            RLKEna =" << (response.getUint8(12) ? " Y " : " N ") <<
+    //LOG(D)	<< "            RLKEna =" << responseYN(12) <<
     // 12 blank space --> 1 space
-    cout	<< " RLKEna =" << (response.getUint8(12) ? " Y " : " N ") <<
-      " WLKEna =" << (response.getUint8(16) ? " Y " : " N ") <<
-      " RLocked =" << (response.getUint8(20) ? " Y " : " N ") <<
-      " WLocked =" << (response.getUint8(24) ? " Y " : " N ");
+    cout << " RLKEna ="  << responseYN(12)
+         << " WLKEna ="  << responseYN(16)
+         << " RLocked =" << responseYN(20)
+         << " WLocked =" << responseYN(24) ;
   }
+
   delete session;
   LOG(D1) << "Exiting DtaDevOpal:listLockingRanges() " << dev;
   return 0;
 }
+
+
 uint8_t DtaDevOpal::setupLockingRange(uint8_t lockingrange, uint64_t start,
                                       uint64_t length, char * password)
 {
@@ -750,6 +758,8 @@ uint8_t DtaDevOpal::setupLockingRange_SUM(uint8_t lockingrange, uint64_t start,
   LOG(D1) << "Exiting DtaDevOpal:setupLockingRange_SUM() " << dev;
   return 0;
 }
+
+
 uint8_t DtaDevOpal::configureLockingRange(uint8_t lockingrange, uint8_t enabled, char * password, uint8_t idx)
 {
   uint8_t lastRC;
