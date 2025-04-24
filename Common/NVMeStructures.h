@@ -233,7 +233,10 @@ typedef unsigned short __u16;
 typedef __signed__ int __s32;
 typedef unsigned int __u32;
 
-#ifdef __GNUC__
+#ifdef _WIN32
+typedef __signed__ long long __s64;
+typedef unsigned long long __u64;
+#elif defined( __GNUC__ )
 __extension__ typedef __signed__ long __s64;
 __extension__ typedef unsigned long __u64;
 #else
