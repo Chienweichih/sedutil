@@ -233,16 +233,24 @@ typedef unsigned short __u16;
 typedef __signed__ int __s32;
 typedef unsigned int __u32;
 
+
 #ifdef _WIN32
 typedef __signed__ long long __s64;
 typedef unsigned long long __u64;
 #elif defined( __GNUC__ )
-__extension__ typedef __signed__ long long __s64;
-__extension__ typedef unsigned long long __u64;
+#    if defined( __PPC64__ )
+    __extension__ typedef __signed__ long __s64;
+    __extension__ typedef unsigned long __u64;
+#    else  // !defined( __PPC64__ )
+    __extension__ typedef __signed__ long long __s64;
+    __extension__ typedef unsigned long long __u64;
+#    endif //defined( __PPC64__ )
 #else
 typedef __signed__ long long __s64;
 typedef unsigned long long __u64;
 #endif
+
+
 static_assert(sizeof(__s64)== 8, "sizeof __s64 is not 8 bytes");
 static_assert(sizeof(__u64)== 8, "sizeof __u64 is not 8 bytes");
 
