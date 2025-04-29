@@ -281,7 +281,7 @@ uint8_t DtaScsiDrive::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
       {
         dxfer_direction = PSC_TO_DEV;
         CScsiCmdSecurityProtocolOut & p = * (CScsiCmdSecurityProtocolOut *) cdb;
-        p.m_Opcode = CScsiCmdSecurityProtocolIn::OPCODE;
+        p.m_Opcode = CScsiCmdSecurityProtocolOut::OPCODE;
         p.m_SecurityProtocol = protocol;
         p.m_SecurityProtocolSpecific = htons(comID);
         p.m_INC_512 = 1;
