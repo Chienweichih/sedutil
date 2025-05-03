@@ -105,24 +105,24 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
     const unsigned char device_part=s.st_rdev & 0x000F;
     typedef enum _rdev_type {
 /*
-    sed -En 's/^[[:space:]]+([[:digit:]]+)[[:space:]]block[[:space:]]+SCSI disk devices[[:space:]]\(([[:digit:]]+)-([[:digit:]]+)\)/      SCSI_DRIVE_\2_\3 = \1/p' kernel.org/admin-guide/devices.txt
+    sed -En 's/^[[:space:]]+([[:digit:]]+)[[:space:]]block[[:space:]]+SCSI disk devices[[:space:]]\(([[:digit:]]+)-([[:digit:]]+)\)/      SCSI_DRIVE_\2_\3 = \1,/p' kernel.org/admin-guide/devices.txt
 */
-      SCSI_DRIVE_0_15    =   8
-      SCSI_DRIVE_16_31   =  65
-      SCSI_DRIVE_32_47   =  66
-      SCSI_DRIVE_48_63   =  67
-      SCSI_DRIVE_64_79   =  68
-      SCSI_DRIVE_80_95   =  69
-      SCSI_DRIVE_96_111  =  70
-      SCSI_DRIVE_112_127 =  71
-      SCSI_DRIVE_128_143 = 128
-      SCSI_DRIVE_144_159 = 129
-      SCSI_DRIVE_160_175 = 130
-      SCSI_DRIVE_176_191 = 131
-      SCSI_DRIVE_192_207 = 132
-      SCSI_DRIVE_208_223 = 133
-      SCSI_DRIVE_224_239 = 134
-      SCSI_DRIVE_240_255 = 135
+      SCSI_DRIVE_0_15    =   8,
+      SCSI_DRIVE_16_31   =  65,
+      SCSI_DRIVE_32_47   =  66,
+      SCSI_DRIVE_48_63   =  67,
+      SCSI_DRIVE_64_79   =  68,
+      SCSI_DRIVE_80_95   =  69,
+      SCSI_DRIVE_96_111  =  70,
+      SCSI_DRIVE_112_127 =  71,
+      SCSI_DRIVE_128_143 = 128,
+      SCSI_DRIVE_144_159 = 129,
+      SCSI_DRIVE_160_175 = 130,
+      SCSI_DRIVE_176_191 = 131,
+      SCSI_DRIVE_192_207 = 132,
+      SCSI_DRIVE_208_223 = 133,
+      SCSI_DRIVE_224_239 = 134,
+      SCSI_DRIVE_240_255 = 135,
 
 
 
@@ -145,7 +145,7 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
 		   device_type==rdev_type::SCSI_DRIVE_64_79   ? " SCSI" :
 		   device_type==rdev_type::SCSI_DRIVE_80_95   ? " SCSI" :
 		   device_type==rdev_type::SCSI_DRIVE_96_111  ? " SCSI" :
-		   device_type==rdev_type::SCSI_DRIVE_112_12  ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_112_127 ? " SCSI" :
 		   device_type==rdev_type::SCSI_DRIVE_128_143 ? " SCSI" :
 		   device_type==rdev_type::SCSI_DRIVE_144_159 ? " SCSI" :
 		   device_type==rdev_type::SCSI_DRIVE_160_175 ? " SCSI" :
@@ -168,7 +168,7 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
          device_type==rdev_type::SCSI_DRIVE_64_79   ||
          device_type==rdev_type::SCSI_DRIVE_80_95   ||
          device_type==rdev_type::SCSI_DRIVE_96_111  ||
-         device_type==rdev_type::SCSI_DRIVE_112_12  ||
+         device_type==rdev_type::SCSI_DRIVE_112_127 ||
          device_type==rdev_type::SCSI_DRIVE_128_143 ||
          device_type==rdev_type::SCSI_DRIVE_144_159 ||
          device_type==rdev_type::SCSI_DRIVE_160_175 ||

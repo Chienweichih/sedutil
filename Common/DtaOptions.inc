@@ -13,6 +13,12 @@ BEGIN_OPTION_MAX(scan, 1)
                                 Scans the devices on the system
                                 identifying the TPers; output in compact JSON
 
+                                SSCs supported by each device are indicated by
+                                    1  Opal (ver. 1, "original")
+                                    2  Opal ver. 2
+                                    P  Pyrite
+                                    Q  Pyrite ver. 2
+                                    E  Enterprise
 )-")
         END_OPTION
 
