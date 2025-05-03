@@ -104,9 +104,31 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
     const unsigned long device_type=s.st_rdev >> 8;
     const unsigned char device_part=s.st_rdev & 0x000F;
     typedef enum _rdev_type {
-      SCSI_DRIVE=8,
-      VIRT_DRIVE=253,
-      NVME_DRIVE=259,
+/*
+    sed -En 's/^[[:space:]]+([[:digit:]]+)[[:space:]]block[[:space:]]+SCSI disk devices[[:space:]]\(([[:digit:]]+)-([[:digit:]]+)\)/      SCSI_DRIVE_\2_\3 = \1/p' kernel.org/admin-guide/devices.txt
+*/
+      SCSI_DRIVE_0_15    =   8
+      SCSI_DRIVE_16_31   =  65
+      SCSI_DRIVE_32_47   =  66
+      SCSI_DRIVE_48_63   =  67
+      SCSI_DRIVE_64_79   =  68
+      SCSI_DRIVE_80_95   =  69
+      SCSI_DRIVE_96_111  =  70
+      SCSI_DRIVE_112_127 =  71
+      SCSI_DRIVE_128_143 = 128
+      SCSI_DRIVE_144_159 = 129
+      SCSI_DRIVE_160_175 = 130
+      SCSI_DRIVE_176_191 = 131
+      SCSI_DRIVE_192_207 = 132
+      SCSI_DRIVE_208_223 = 133
+      SCSI_DRIVE_224_239 = 134
+      SCSI_DRIVE_240_255 = 135
+
+
+
+      VIRT_DRIVE         = 253,
+
+      NVME_DRIVE         = 259,
     } rdev_type;
 
     LOG(D4) << devref
@@ -116,7 +138,22 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
             << " device type (st_rdev>>8):" << HEXON(2) << (s.st_rdev>>8)
             << " device part (st_rdev&0xF):" << HEXON(1) << (s.st_rdev & 0x000F)
             << (device_part==0
-                ? (device_type==rdev_type::SCSI_DRIVE ? " SCSI" :
+                ? (device_type==rdev_type::SCSI_DRIVE_0_15    ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_16_31   ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_32_47   ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_48_63   ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_64_79   ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_80_95   ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_96_111  ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_112_12  ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_128_143 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_144_159 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_160_175 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_176_191 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_192_207 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_208_223 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_224_239 ? " SCSI" :
+		   device_type==rdev_type::SCSI_DRIVE_240_255 ? " SCSI" :
                    device_type==rdev_type::VIRT_DRIVE ? " VIRT" :
                    device_type==rdev_type::NVME_DRIVE ? " NVMe" :
                    "")
@@ -124,9 +161,26 @@ std::vector<std::string> DtaLinux::generateDtaDriveDevRefs()
       ;
 
     if (device_part==0 &&
-        (device_type==rdev_type::SCSI_DRIVE ||
-         device_type==rdev_type::VIRT_DRIVE ||
-         device_type==rdev_type::NVME_DRIVE)) {
+        (device_type==rdev_type::SCSI_DRIVE_0_15    ||
+         device_type==rdev_type::SCSI_DRIVE_16_31   ||
+         device_type==rdev_type::SCSI_DRIVE_32_47   ||
+         device_type==rdev_type::SCSI_DRIVE_48_63   ||
+         device_type==rdev_type::SCSI_DRIVE_64_79   ||
+         device_type==rdev_type::SCSI_DRIVE_80_95   ||
+         device_type==rdev_type::SCSI_DRIVE_96_111  ||
+         device_type==rdev_type::SCSI_DRIVE_112_12  ||
+         device_type==rdev_type::SCSI_DRIVE_128_143 ||
+         device_type==rdev_type::SCSI_DRIVE_144_159 ||
+         device_type==rdev_type::SCSI_DRIVE_160_175 ||
+         device_type==rdev_type::SCSI_DRIVE_176_191 ||
+         device_type==rdev_type::SCSI_DRIVE_192_207 ||
+         device_type==rdev_type::SCSI_DRIVE_208_223 ||
+         device_type==rdev_type::SCSI_DRIVE_224_239 ||
+         device_type==rdev_type::SCSI_DRIVE_240_255 ||
+
+         device_type==rdev_type::VIRT_DRIVE         ||
+
+         device_type==rdev_type::NVME_DRIVE         )) {
       // LOG(E) << devref << " accepted."
       //   ;
       devrefs.push_back(devref);
