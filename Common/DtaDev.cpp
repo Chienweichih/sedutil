@@ -234,20 +234,19 @@ void DtaDev::puke()
          << "   " << device_info.manufacturerName;
   }
   cout << endl;
-
+#define diBit(name,field) #name << " = " << ((device_info.field) ? "Y" : "N")
   /* TPer */
   if (device_info.TPer) {
     cout << "TPer function (" << HEXON(4) << FC_TPER << HEXOFF << ")" << endl;
-    cout << "    ACKNAK = " << (device_info.TPer_ACKNACK ? "Y, " : "N, ")
-         << "ASYNC = " << (device_info.TPer_async ? "Y, " : "N. ")
-         << "BufferManagement = " << (device_info.TPer_bufferMgt ? "Y, " : "N, ")
-         << "comIDManagement  = " << (device_info.TPer_comIDMgt ? "Y, " : "N, ")
-         << "Streaming = " << (device_info.TPer_streaming ? "Y, " : "N, ")
-         << "SYNC = " << (device_info.TPer_sync ? "Y" : "N")
-         << endl;
+    cout << "    "
+      << diBit(ACKNACK          , TPer_ACKNACK   ) << ", "
+      << diBit(ASYNC            , TPer_sync      ) << ", "
+      << diBit(BufferManagement , TPer_bufferMgt ) << ", "
+      << diBit(comIDManagement  , TPer_comIDMgt  ) << ", "
+      << diBit(Streaming        , TPer_streaming ) << ", "
+      << diBit(SYNC             , TPer_sync      ) << endl;
   }
   if (device_info.Locking) {
-
     cout << "Locking function (" << HEXON(4) << FC_LOCKING << HEXOFF << ")" << endl;
     cout << "    Locked = " << (device_info.Locking_locked ? "Y, " : "N, ")
          << "LockingEnabled = " << (device_info.Locking_lockingEnabled ? "Y, " : "N, ")
