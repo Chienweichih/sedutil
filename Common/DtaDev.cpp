@@ -357,6 +357,17 @@ void DtaDev::puke()
     cout << ", HardReset  = " << (device_info.BlockSID_HardReset? "1" : "0") ;
     cout << endl;
   }
+  if (device_info.NSLocking) {
+    cout << "Namespace Locking function (" << HEXON(4) << FC_NSLocking << ")" << HEXOFF << endl;
+    cout << "    Version = " << HEXON(1) <<  (uint16_t)device_info.NSLocking_version << HEXOFF;
+    cout << ", Length = " << HEXON(1) <<  (uint16_t)device_info.NSLocking_length << HEXOFF;
+    cout << ", range_P = " << HEXON(1) <<  (uint16_t)device_info.range_P << HEXOFF;
+    cout << ", range_C = " << HEXON(1) <<  (uint16_t)device_info.range_C << HEXOFF;
+    cout << ", Max Key Count = " << device_info.Max_Key_Count;
+    cout << ", Unused Key Count  = " << device_info.Unused_Key_Count;
+    cout << ", Max Range Per NS  = " << device_info.Max_Range_Per_NS;
+    cout << endl;
+  }
   if (device_info.DataRemoval) {
     cout << "DataRemoval 1." << ((device_info.DataRemoval_version & 0xf) - 1) << " function (" << HEXON(4) << FC_DataRemoval << ")" << HEXOFF << endl;
     cout << "    DataRemoval OperationProcessing " << HEXON(1) << (uint16_t)device_info.DataRemoval_OperationProcessing << HEXOFF;

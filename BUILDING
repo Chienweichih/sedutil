@@ -5,6 +5,10 @@ For instance, in a new Fedora 42 running ppc64le, this `dnf` command:
 
 sudo dnf install autoconf make g++ automake systemd-devel libnvme-devel
 
+in Ubuntu 24.04:
+
+sudo apt install build-essential autoconf libsystemd-dev libnvme-dev
+
 
 Actual building steps:
 autoreconf -i

@@ -195,6 +195,11 @@ void parseDiscovery0Features(const uint8_t * d0Response, DTA_DEVICE_INFO & di)
       LOG(D2) << "Namespace Locking Feature";
       di.NSLocking = 1;
       di.NSLocking_version = body->Configurable_Namespace_LockingFeature.version;
+      di.NSLocking_length = body->Configurable_Namespace_LockingFeature.length;
+      di.range_P = body->Configurable_Namespace_LockingFeature.range_P;
+      di.range_C = body->Configurable_Namespace_LockingFeature.range_C;
+
+      // FIXME: SWAP32()?
       di.Max_Key_Count = body->Configurable_Namespace_LockingFeature.Max_Key_Count;
       di.Unused_Key_Count = body->Configurable_Namespace_LockingFeature.Unused_Key_Count;
       di.Max_Range_Per_NS = body->Configurable_Namespace_LockingFeature.Max_Range_Per_NS;

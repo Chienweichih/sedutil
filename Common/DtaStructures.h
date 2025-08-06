@@ -387,7 +387,11 @@ typedef struct _Discovery0Configurable_Namespace_LockingFeature {
   uint16_t featureCode; /* 0x0403 */
   uint8_t reserved_v : 4;
   uint8_t version : 4;
-  uint8_t reserved;
+  uint8_t length;
+  uint8_t reserved02 : 6;
+  uint8_t range_P : 1;
+  uint8_t range_C : 1;
+  uint8_t reserved03[3];
   uint32_t Max_Key_Count;
   uint32_t Unused_Key_Count;
   uint32_t Max_Range_Per_NS;
@@ -589,6 +593,7 @@ typedef struct _DTA_DEVICE_INFO {
   uint16_t DataRemoval_Time_Bit0;
   // NSLocking
   uint8_t NSLocking_version;
+  uint8_t NSLocking_length;
   uint8_t range_C;
   uint8_t range_P;
   uint32_t Max_Key_Count;
