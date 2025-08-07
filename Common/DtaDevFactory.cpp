@@ -58,6 +58,11 @@ DtaDev* DtaDev::getDtaDev(const char * devref,
           << " (in " << __FILE__ << ")";
   if (DTAERROR_SUCCESS == drive->discovery0(di)) {  // drive responds to most basic TRUSTED_RECEIVE
     LOG(D4) << "DtaDev::getDtaDev discovery0 succeeded.";
+    if (DTAERROR_SUCCESS == drive->discovery0_NS(di)) {  // drive responds to most basic TRUSTED_RECEIVE
+        LOG(D4) << "DtaDev::getDtaDev discovery0 NS succeeded.";
+    } else {
+        LOG(D4) << "DtaDev::getDtaDev discovery0 NS failed";
+    }
     if (di.OPAL20)     return new DtaDevOpal2(devref, drive, di);
     if (di.OPAL10)     return new DtaDevOpal1(devref, drive, di);
     if (di.PYRITE2)    return new DtaDevPyrite2(devref, drive, di);

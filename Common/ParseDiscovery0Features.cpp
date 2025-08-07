@@ -204,6 +204,16 @@ void parseDiscovery0Features(const uint8_t * d0Response, DTA_DEVICE_INFO & di)
       di.Unused_Key_Count = body->Configurable_Namespace_LockingFeature.Unused_Key_Count;
       di.Max_Range_Per_NS = body->Configurable_Namespace_LockingFeature.Max_Range_Per_NS;
       break;
+    case FC_NSGeometry:
+      LOG(D2) << "Namespace Geometry Reporting Feature";
+      di.NSGeometry = 1;
+      di.NSGeometry_version = body->geometry_NS.version;
+      di.NSGeometry_length = body->geometry_NS.length;
+      di.NSGeometry_align = body->geometry_NS.align;
+      di.NSGeometry_alignmentGranularity = SWAP64(body->geometry_NS.alignmentGranularity);
+      di.NSGeometry_logicalBlockSize = SWAP32(body->geometry_NS.logicalBlockSize);
+      di.NSGeometry_lowestAlignedLBA = SWAP64(body->geometry_NS.lowestAlighedLBA);
+      break;
     case FC_DataRemoval: /* Data Removal mechanism 0x404 */
       LOG(D2) << "Data Removal Feature";
       di.DataRemoval = 1;

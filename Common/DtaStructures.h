@@ -61,6 +61,7 @@ typedef struct _SCSI_INQUIRY_RESPONSE {
 #define FC_BlockSID    0x0402
 #define FC_NSLocking   0x0403 // Mandatory 2018 TCG feature set  1.32
 #define FC_DataRemoval 0x0404
+#define FC_NSGeometry  0x0405
 #define FC_Min_Vendor_Specific 0xC000
 
 /** The Discovery 0 Header. As defined in
@@ -416,6 +417,7 @@ union Discovery0Features {
   Discovery0BlockSIDFeatures blocksidauth;
   Discovery0DataRemovalMechanismFeatures dataremoval;
   Discovery0Configurable_Namespace_LockingFeature  Configurable_Namespace_LockingFeature;
+  Discovery0GeometryFeatures geometry_NS;
 };
 
 /** ComPacket (header) for transmissions. */
@@ -503,6 +505,7 @@ typedef struct _DTA_DEVICE_INFO {
   uint8_t BlockSID;
   uint8_t DataRemoval;
   uint8_t NSLocking;
+  uint8_t NSGeometry;
   uint8_t FIPS;
 
   // values ONLY VALID IF FEATURE ABOVE IS TRUE!!!!!
@@ -599,6 +602,13 @@ typedef struct _DTA_DEVICE_INFO {
   uint32_t Max_Key_Count;
   uint32_t Unused_Key_Count;
   uint32_t Max_Range_Per_NS;
+  // NSGeometry
+  uint8_t NSGeometry_version;
+  uint8_t NSGeometry_length;
+  uint8_t NSGeometry_align;
+  uint32_t NSGeometry_logicalBlockSize;
+  uint64_t NSGeometry_alignmentGranularity;
+  uint64_t NSGeometry_lowestAlignedLBA;
 
 
   // IDENTIFY information from SCSI INQUIRY and/or ATA IDENTIFY DEVICE

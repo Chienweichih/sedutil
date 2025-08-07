@@ -134,3 +134,21 @@ uint8_t DtaDrive::discovery0(DTA_DEVICE_INFO & disk_info) {
   LOG(D4) << "DtaDrive::discovery0:Acquiring Discovery 0 response succeeded.";
   return DTAERROR_SUCCESS;
 }
+
+uint8_t DtaDrive::discovery0_NS(DTA_DEVICE_INFO & disk_info) {
+  LOG(D4) << "DtaDrive::discovery0_NS";
+  void * d0Response = OS.alloc_aligned_MIN_BUFFER_LENGTH_buffer();
+  if (d0Response == NULL)
+      return DTAERROR_COMMAND_ERROR;
+  memset(d0Response, 0, MIN_BUFFER_LENGTH);
+
+  int lastRC = sendCmd(TRUSTED_RECEIVE, 0x01, 0x0002, d0Response, MIN_BUFFER_LENGTH);
+  if ((lastRC ) != 0) {
+    LOG(D4) << "DtaDrive::discovery0_NS:Acquiring Discovery 0 NS response failed " << lastRC;
+    return DTAERROR_COMMAND_ERROR;
+  }
+  parseDiscovery0Features((uint8_t *)d0Response, disk_info);
+  OS.free_aligned_MIN_BUFFER_LENGTH_buffer(d0Response);
+  LOG(D4) << "DtaDrive::discovery0_NS:Acquiring Discovery 0 NS response succeeded.";
+  return DTAERROR_SUCCESS;
+}

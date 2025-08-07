@@ -379,6 +379,21 @@ void DtaDev::puke()
     cout << "    DataRemoval TimeFormat Bit 1 : " << HEXON(1) << (uint16_t)device_info.DataRemoval_TimeFormat_Bit1 << " " << HEXON(4) << device_info.DataRemoval_Time_Bit1 << HEXOFF << endl;
     cout << "    DataRemoval TimeFormat Bit 0 : " << HEXON(1) << (uint16_t)device_info.DataRemoval_TimeFormat_Bit0 << " " << HEXON(4) << device_info.DataRemoval_Time_Bit0 << HEXOFF << endl;
   }
+  if (device_info.NSGeometry) {
+    cout << "Namespace Geometry function (" << HEXON(4) << FC_NSGeometry << HEXOFF << ")" << endl;
+    cout << "    Align = " << (device_info.NSGeometry_align ? "Y, " : "N, ")
+         << "Version = " << HEXON(1) <<  (uint16_t)device_info.NSGeometry_version << HEXOFF
+         << ", Length = " << HEXON(1) <<  (uint16_t)device_info.NSGeometry_length << HEXOFF
+         << ", Alignment Granularity = " << device_info.NSGeometry_alignmentGranularity
+         << " (" << // display bytes
+      (device_info.NSGeometry_alignmentGranularity *
+       device_info.NSGeometry_logicalBlockSize)
+         << ")"
+         << ", Logical Block size = " << device_info.NSGeometry_logicalBlockSize
+         << ", Lowest Aligned LBA = " << device_info.NSGeometry_lowestAlignedLBA
+         << endl;
+    cout << endl;
+  }
 
 
   if (device_info.Unknown)
