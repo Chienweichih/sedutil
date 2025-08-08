@@ -31,6 +31,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #define FC_OPALV200   0x0203
 #define FC_BLOCKSIDAUTH   0x0402
 #define FC_NSLocking  0x0403
+#define FC_NSGeometry 0x0405
 
 /** The Discovery 0 Header. As defined in
 * Opal SSC Documentation
@@ -266,6 +267,7 @@ union Discovery0Features {
     Discovery0DatastoreTable datastore;
     Discovery0BlockSIDAuthentication blockSIDAuthentication;
     Discovery0Configurable_Namespace_LockingFeature Configurable_Namespace_LockingFeature;
+    Discovery0GeometryFeatures geometry_NS;
 };
 
 /** ComPacket (header) for transmissions. */
@@ -333,6 +335,7 @@ typedef struct _OPAL_DiskInfo {
 	uint8_t ANY_OPAL_SSC : 1;
     uint8_t BlockSIDAuthentication: 1;
     uint8_t NSLocking: 1;
+    uint8_t NSGeometry: 1;
     // values ONLY VALID IF FUNCTION ABOVE IS TRUE!!!!!
     uint8_t TPer_ACKNACK : 1;
     uint8_t TPer_async : 1;
@@ -367,6 +370,12 @@ typedef struct _OPAL_DiskInfo {
     uint32_t NSLocking_Max_Key_Count;
     uint32_t NSLocking_Unused_Key_Count;
     uint32_t NSLocking_Max_Range_Per_NS;
+    uint8_t NSGeometry_version;
+    uint8_t NSGeometry_length;
+    uint8_t NSGeometry_align;
+    uint32_t NSGeometry_logicalBlockSize;
+    uint64_t NSGeometry_alignmentGranularity;
+    uint64_t NSGeometry_lowestAlignedLBA;
     uint16_t DataStore_maxTables;
     uint32_t DataStore_maxTableSize;
     uint32_t DataStore_alignment;
