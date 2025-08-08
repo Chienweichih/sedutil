@@ -73,6 +73,7 @@ public:
 	 * a macro when the input buffer is read.
 	 */
 	void discovery0();
+	void discovery0_NS();
 
 	/*
 	 * virtual methods required in the OS specific

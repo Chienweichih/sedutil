@@ -227,6 +227,58 @@ void DtaDev::discovery0()
     }
     while (cpos < epos);
 
+    discovery0_NS();
+}
+void DtaDev::discovery0_NS()
+{
+    LOG(D1) << "Entering DtaDev::discovery0_NS()";
+    uint8_t lastRC;
+    void * d0Response = NULL;
+    uint8_t * epos, *cpos;
+    Discovery0Header * hdr;
+    Discovery0Features * body;
+    d0Response = discovery0buffer + IO_BUFFER_ALIGNMENT;
+    d0Response = (void *)((uintptr_t)d0Response & (uintptr_t)~(IO_BUFFER_ALIGNMENT - 1));
+    memset(d0Response, 0, MIN_BUFFER_LENGTH);
+    if ((lastRC = sendCmd(IF_RECV, 0x01, 0x0002, d0Response, MIN_BUFFER_LENGTH)) != 0) {
+        LOG(D) << "Send NS_D0 request to device failed " << (uint16_t)lastRC;
+        return;
+    }
+
+    epos = cpos = (uint8_t *) d0Response;
+    hdr = (Discovery0Header *) d0Response;
+    LOG(D3) << "Dumping NS_D0Response";
+    IFLOG(D3) DtaHexDump(hdr, SWAP32(hdr->length));
+    epos = epos + SWAP32(hdr->length);
+    cpos = cpos + 48; // TODO: check header version
+
+    do {
+        body = (Discovery0Features *) cpos;
+        switch (SWAP16(body->TPer.featureCode)) { /* could use of the structures here is a common field */
+        case FC_NSGeometry: /* Namespace Geometry Features */
+            disk_info.NSGeometry = 1;
+            disk_info.NSGeometry_version = body->geometry_NS.version;
+            disk_info.NSGeometry_length = body->geometry_NS.length;
+            disk_info.NSGeometry_align = body->geometry_NS.align;
+            disk_info.NSGeometry_alignmentGranularity = SWAP64(body->geometry_NS.alignmentGranularity);
+            disk_info.NSGeometry_logicalBlockSize = SWAP32(body->geometry_NS.logicalBlockSize);
+            disk_info.NSGeometry_lowestAlignedLBA = SWAP64(body->geometry_NS.lowestAlighedLBA);
+            break;
+        default:
+			if (0xbfff < (SWAP16(body->TPer.featureCode))) {
+				// silently ignore vendor specific segments as there is no public doc on them
+				disk_info.VendorSpecific += 1;
+			}
+			else {
+				disk_info.Unknown += 1;
+				LOG(D) << "Unknown Feature in Discovery 0 NS response " << std::hex << SWAP16(body->TPer.featureCode) << std::dec;
+				/* should do something here */
+			}
+            break;
+        }
+        cpos = cpos + (body->TPer.length + 4);
+    }
+    while (cpos < epos);
 }
 void DtaDev::puke()
 {
@@ -332,6 +384,22 @@ void DtaDev::puke()
         cout << ", Max Key Count = " << disk_info.NSLocking_Max_Key_Count;
         cout << ", Unused Key Count  = " << disk_info.NSLocking_Unused_Key_Count;
         cout << ", Max Range Per NS  = " << disk_info.NSLocking_Max_Range_Per_NS;
+        cout << endl;
+    }
+
+    if (disk_info.NSGeometry) {
+        cout << "Namespace Geometry function (" << HEXON(4) << FC_NSGeometry << HEXOFF << ")" << endl;
+        cout << "    Align = " << (disk_info.NSGeometry_align ? "Y, " : "N, ")
+            << "Version = " << HEXON(1) <<  (uint16_t)disk_info.NSGeometry_version << HEXOFF
+            << ", Length = " << HEXON(1) <<  (uint16_t)disk_info.NSGeometry_length << HEXOFF
+            << ", Alignment Granularity = " << disk_info.NSGeometry_alignmentGranularity
+            << " (" << // display bytes
+            (disk_info.NSGeometry_alignmentGranularity *
+             disk_info.NSGeometry_logicalBlockSize)
+            << ")"
+            << ", Logical Block size = " << disk_info.NSGeometry_logicalBlockSize
+            << ", Lowest Aligned LBA = " << disk_info.NSGeometry_lowestAlignedLBA
+            << endl;
         cout << endl;
     }
 
