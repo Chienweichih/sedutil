@@ -200,6 +200,17 @@ void DtaDev::discovery0()
             disk_info.BlockSIDAuthentication_SIDBlockedState = body->blockSIDAuthentication.sidBlockedState;
             disk_info.BlockSIDAuthentication_HardwareReset = body->blockSIDAuthentication.hardwareReset;
             break;
+        case FC_NSLocking:
+            disk_info.NSLocking = 1;
+            disk_info.NSLocking_version = body->Configurable_Namespace_LockingFeature.version;
+            disk_info.NSLocking_length = body->Configurable_Namespace_LockingFeature.length;
+            disk_info.NSLocking_range_P = body->Configurable_Namespace_LockingFeature.range_P;
+            disk_info.NSLocking_range_C = body->Configurable_Namespace_LockingFeature.range_C;
+
+            disk_info.NSLocking_Max_Key_Count = SWAP32(body->Configurable_Namespace_LockingFeature.Max_Key_Count);
+            disk_info.NSLocking_Unused_Key_Count = SWAP32(body->Configurable_Namespace_LockingFeature.Unused_Key_Count);
+            disk_info.NSLocking_Max_Range_Per_NS = SWAP32(body->Configurable_Namespace_LockingFeature.Max_Range_Per_NS);
+            break;
         default:
 			if (0xbfff < (SWAP16(body->TPer.featureCode))) {
 				// silently ignore vendor specific segments as there is no public doc on them
@@ -311,6 +322,18 @@ void DtaDev::puke()
             << "HW Reset can clear  = " << (disk_info.BlockSIDAuthentication_HardwareReset ? "Y" : "N")
             << std::endl;
 	}
+
+    if (disk_info.NSLocking) {
+        cout << "Namespace Locking function (" << HEXON(4) << FC_NSLocking << ")" << HEXOFF << endl;
+        cout << "    Version = " << HEXON(1) <<  (uint16_t)disk_info.NSLocking_version << HEXOFF;
+        cout << ", Length = " << HEXON(1) <<  (uint16_t)disk_info.NSLocking_length << HEXOFF;
+        cout << ", range_P = " << HEXON(1) <<  (uint16_t)disk_info.NSLocking_range_P << HEXOFF;
+        cout << ", range_C = " << HEXON(1) <<  (uint16_t)disk_info.NSLocking_range_C << HEXOFF;
+        cout << ", Max Key Count = " << disk_info.NSLocking_Max_Key_Count;
+        cout << ", Unused Key Count  = " << disk_info.NSLocking_Unused_Key_Count;
+        cout << ", Max Range Per NS  = " << disk_info.NSLocking_Max_Range_Per_NS;
+        cout << endl;
+    }
 
 	if (disk_info.Unknown)
 		cout << "**** " << (uint16_t)disk_info.Unknown << " **** Unknown function codes IGNORED " << std::endl;

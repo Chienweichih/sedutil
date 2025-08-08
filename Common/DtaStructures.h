@@ -30,6 +30,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #define FC_OPALV100   0x0200
 #define FC_OPALV200   0x0203
 #define FC_BLOCKSIDAUTH   0x0402
+#define FC_NSLocking  0x0403
 
 /** The Discovery 0 Header. As defined in
 * Opal SSC Documentation
@@ -203,6 +204,20 @@ typedef struct _Discovery0BlockSIDAuthentication {
     uint32_t reserved05;
 } Discovery0BlockSIDAuthentication;
 
+typedef struct _Discovery0Configurable_Namespace_LockingFeature {
+    uint16_t featureCode; /* 0x0403 */
+    uint8_t reserved_v : 4;
+    uint8_t version : 4;
+    uint8_t length;
+    uint8_t reserved02 : 6;
+    uint8_t range_P : 1;
+    uint8_t range_C : 1;
+    uint8_t reserved03[3];
+    uint32_t Max_Key_Count;
+    uint32_t Unused_Key_Count;
+    uint32_t Max_Range_Per_NS;
+} Discovery0Configurable_Namespace_LockingFeature;
+
 /** Additonal Datastores feature .
  */
 typedef struct _Discovery0DatastoreTable {
@@ -250,6 +265,7 @@ union Discovery0Features {
 	Discovery0OpalV100 opalv100;
     Discovery0DatastoreTable datastore;
     Discovery0BlockSIDAuthentication blockSIDAuthentication;
+    Discovery0Configurable_Namespace_LockingFeature Configurable_Namespace_LockingFeature;
 };
 
 /** ComPacket (header) for transmissions. */
@@ -316,6 +332,7 @@ typedef struct _OPAL_DiskInfo {
 	uint8_t Properties : 1;
 	uint8_t ANY_OPAL_SSC : 1;
     uint8_t BlockSIDAuthentication: 1;
+    uint8_t NSLocking: 1;
     // values ONLY VALID IF FUNCTION ABOVE IS TRUE!!!!!
     uint8_t TPer_ACKNACK : 1;
     uint8_t TPer_async : 1;
@@ -343,6 +360,13 @@ typedef struct _OPAL_DiskInfo {
     uint8_t BlockSIDAuthentication_SIDValueState: 1;
     uint8_t BlockSIDAuthentication_SIDBlockedState: 1;
     uint8_t BlockSIDAuthentication_HardwareReset: 1;
+    uint8_t NSLocking_version;
+    uint8_t NSLocking_length;
+    uint8_t NSLocking_range_C;
+    uint8_t NSLocking_range_P;
+    uint32_t NSLocking_Max_Key_Count;
+    uint32_t NSLocking_Unused_Key_Count;
+    uint32_t NSLocking_Max_Range_Per_NS;
     uint16_t DataStore_maxTables;
     uint32_t DataStore_maxTableSize;
     uint32_t DataStore_alignment;
