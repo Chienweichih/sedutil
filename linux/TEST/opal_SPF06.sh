@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./linux/opal_config.sh
+source ./linux/TEST/OPAL_CONFIG.sh
 
 PROG=./sedutil-cli
 DEVICE="${1:-/dev/nvme0n1}"
