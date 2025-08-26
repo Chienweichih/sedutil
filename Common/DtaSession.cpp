@@ -111,7 +111,12 @@ DtaSession::start(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthori
     cmd->addToken(105); // HostSessionID : sessionnumber
     cmd->addToken(SP); // SPID : SP
     cmd->addToken(OPAL_TINY_ATOM::UINT_01); // write
-	if ((NULL != HostChallenge) && (!d->isEprise())) {
+    vector<uint8_t> anybody;
+    anybody.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
+    for (int i = 0; i < 8; i++) {
+        anybody.push_back(OPALUID[OPAL_UID::OPAL_UID_HEXFF][i]);
+    }
+	if ((anybody != SignAuthority) && (NULL != HostChallenge) && (!d->isEprise())) {
 		cmd->addToken(OPAL_TOKEN::STARTNAME);
 		cmd->addToken(OPAL_TINY_ATOM::UINT_00);
 		if (hashPwd) {
