@@ -1,15 +1,10 @@
 #!/bin/bash
 
-source ./linux/TEST/OPAL_CONFIG.sh
+source ./linux/TEST/OPAL_UTILS.sh
 source ./linux/TEST/OPAL_CNL_UTILS.sh
 
 PROG=./sedutil-cli
 DEVICE="${1:-/dev/nvme0n1}"
-PSID="${2:-00000000000000000000000000000000}"
-SID_PW="1234"
-ADM_PW="5678"
-
-SEDUTIL_ANYBODY="FFFFFFFFFFFFFFFF" # OPAL_UID::OPAL_UID_HEXFF
 
 # Check sedutil-cli exists
 if ! command -v "$PROG" &> /dev/null; then
@@ -22,7 +17,7 @@ root_device=$(df / | tail -1 | awk '{print $1}')
 base_device=$(basename "$root_device" | sed 's/p[0-9]*$//')
 if [[ "/dev/$base_device" == "$DEVICE" ]]; then
     echo "[ERROR] $DEVICE is the current system disk."
-	exit 1
+    exit 1
 fi
 
 # Get MSID
@@ -32,29 +27,30 @@ if [[ -z "$MSID" ]]; then
     exit 1
 else
     echo "MSID: $MSID"
+    OPAL_Get_MSID
 fi
 
 # 0. Disable Block SID
+PSID="${2:-00000000000000000000000000000000}"
 "$PROG" --yesIreallywanttoERASEALLmydatausingthePSID "$PSID" "$DEVICE"
 
 # 1. Initial Opal
 "$PROG" --initialsetup "$MSID" "$DEVICE"
-"$PROG" --setSIDPassword "$MSID" "$SID_PW" "$DEVICE"
-"$PROG" --setAdmin1Pwd "$MSID" "$ADM_PW" "$DEVICE"
 
-# 2. lv0 discovery
+# 2. Level 0 discovery
 "$PROG" --query "$DEVICE"
 
-# 3. rawCmd
+# 3. MethodID Table Preconfiguration
 MethodIDTablePreconfiguration
 
-# 4. rawCmd
+# 4. Access Control Table Preconfiguration
 AccessControlTablePreconfiguration
 
-# 5. rawCmd
+# 5. ACE Table Preconfiguration
 ACETablePreconfiguration
 
-# 6. rawCmd
+# 6. Locking Table Preconfiguration
 LockingTablePreconfiguration
 
-"$PROG" --revertTPer "$SID_PW" "$DEVICE"
+# 7. Revert TPER
+"$PROG" --revertTPer "$MSID" "$DEVICE"

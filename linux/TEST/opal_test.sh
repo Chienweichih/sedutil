@@ -2,11 +2,6 @@
 
 PROG=./sedutil-cli
 DEVICE="${1:-/dev/nvme0n1}"
-PSID="${2:-00000000000000000000000000000000}"
-SID_PW="1234"
-ADM_PW="5678"
-OUTPUT1="/tmp/opal_test_1"
-OUTPUT2="/tmp/opal_test_2"
 
 # Check sedutil-cli exists
 if ! command -v "$PROG" &> /dev/null; then
@@ -19,7 +14,7 @@ root_device=$(df / | tail -1 | awk '{print $1}')
 base_device=$(basename "$root_device" | sed 's/p[0-9]*$//')
 if [[ "/dev/$base_device" == "$DEVICE" ]]; then
     echo "[ERROR] $DEVICE is the current system disk."
-	exit 1
+    exit 1
 fi
 
 # Get MSID
@@ -32,9 +27,12 @@ else
 fi
 
 # 0. Disable Block SID
-# "$PROG" --yesIreallywanttoERASEALLmydatausingthePSID "$PSID" "$DEVICE"
+PSID="${2:-00000000000000000000000000000000}"
+"$PROG" --yesIreallywanttoERASEALLmydatausingthePSID "$PSID" "$DEVICE"
 
 # 1. Initial Opal
+SID_PW="1234"
+ADM_PW="5678"
 "$PROG" --initialsetup "$MSID" "$DEVICE"
 "$PROG" --setSIDPassword "$MSID" "$SID_PW" "$DEVICE"
 "$PROG" --setAdmin1Pwd "$MSID" "$ADM_PW" "$DEVICE"
@@ -47,8 +45,11 @@ fi
 "$PROG" --enablelockingrange 8 "$ADM_PW" "$DEVICE"
 
 # 3. Data Write and Read
+OUTPUT1="/tmp/opal_test_1"
+OUTPUT2="/tmp/opal_test_2"
 hexdump -C -n 512 "$DEVICE" > "$OUTPUT1"
-dd if=/dev/urandom of="$DEVICE" bs=1024k count=100
+dd if=/dev/urandom of="$DEVICE" bs=1024k count=100 conv=fsync
+sync
 hexdump -C -n 512 "$DEVICE" > "$OUTPUT2"
 
 if cmp -s "$OUTPUT1" "$OUTPUT2"; then
