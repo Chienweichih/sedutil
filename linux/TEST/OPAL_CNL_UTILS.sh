@@ -252,3 +252,35 @@ LockingTablePreconfiguration() {
         LockingSP_Admin1_Get "$item" "$hexparms"
     done
 }
+
+# Function: LockingSP_Assign
+# Purpose:
+# Arguments:
+#   $1 - LockingTableUID
+#   $2 - Parameters list
+# Returns: None (sedutil dump response)
+LockingSP_Assign() {
+    local sp="3" # OPAL_UID::OPAL_LOCKINGSP_UID
+    local hexauth="$OPAL_AUTHORITY_ADMIN1"
+    local pass="$MSID"
+    local hexinvokingUID=$1
+    local hexmethod="$OPAL_METHOD_ASSIGN"
+    local hexparms=$2
+    "$PROG" --rawCmd "$sp" "$hexauth" "$pass" "$hexinvokingUID" "$hexmethod" "$hexparms" "$DEVICE"
+}
+
+# Function: LockingSP_Deassign
+# Purpose:
+# Arguments:
+#   $1 - LockingTableUID
+#   $2 - Parameters list
+# Returns: None (sedutil dump response)
+LockingSP_Deassign() {
+    local sp="3" # OPAL_UID::OPAL_LOCKINGSP_UID
+    local hexauth="$OPAL_AUTHORITY_ADMIN1"
+    local pass="$MSID"
+    local hexinvokingUID=$1
+    local hexmethod="$OPAL_METHOD_DEASSIGN"
+    local hexparms=$2
+    "$PROG" --rawCmd "$sp" "$hexauth" "$pass" "$hexinvokingUID" "$hexmethod" "$hexparms" "$DEVICE"
+}
