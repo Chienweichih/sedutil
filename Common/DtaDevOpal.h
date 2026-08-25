@@ -151,6 +151,11 @@ public:
          * @param newpassword  value password is to be changed to
          */
 	uint8_t setNewPassword_SUM(char * password, char * userid, char * newpassword);
+        /** User command to print the state of a locking range.
+         * @param lockingrange locking range number
+         * @param Admin1Password password of the locking administrative authority 
+         */
+	uint8_t printLockingRangeStatus(uint8_t lockingrange, char * Admin1Password);
         /** User command to manipulate the state of a locking range.
          * RW|RO|LK are the supported states @see OPAL_LOCKINGSTATE
          * @param lockingrange locking range number

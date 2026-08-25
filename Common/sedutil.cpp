@@ -118,6 +118,10 @@ int main(int argc, char * argv[])
         LOG(D) << "Loading PBA image " << argv[opts.pbafile] << " to " << opts.device;
         return d->loadPBA(argv[opts.password], argv[opts.pbafile]);
 		break;
+	case sedutiloption::printLockingRangeStatus:
+        LOG(D) << "Print Locking Range Status" << (uint16_t) opts.lockingrange << " " << (uint16_t) opts.lockingstate;
+        return d->printLockingRangeStatus(opts.lockingrange, argv[opts.password]);
+		break;
 	case sedutiloption::setLockingRange:
         LOG(D) << "Setting Locking Range " << (uint16_t) opts.lockingrange << " " << (uint16_t) opts.lockingstate;
         return d->setLockingRange(opts.lockingrange, opts.lockingstate, argv[opts.password]);

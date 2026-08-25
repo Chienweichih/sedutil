@@ -831,6 +831,19 @@ uint8_t DtaDevOpal::setMBRDone(uint8_t mbrstate, char * Admin1Password)
 	LOG(D1) << "Exiting DtaDevOpal::setMBRDone";
 	return 0;
 }
+uint8_t DtaDevOpal::printLockingRangeStatus(uint8_t lockingrange,
+	char * Admin1Password)
+{
+	lrStatus_t lrStatus;
+	if ((lrStatus = getLockingRange_status(lockingrange, Admin1Password)).command_status != 0) {
+		LOG(E) << "printLockingRangeStatus failed - unable to query locking range status";
+		return lrStatus.command_status;
+	}
+	LOG(I) << "Locking Range " << lockingrange << " Begin: " << lrStatus.start << " Length: "
+		<< lrStatus.size << " RLKEna: " << lrStatus.RLKEna << " WLKEna: " << lrStatus.WLKEna
+		<< " RLocked: " << lrStatus.RLocked << " WLocked: " << lrStatus.WLocked;
+	return 0;
+}
 uint8_t DtaDevOpal::setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
 	char * Admin1Password)
 {

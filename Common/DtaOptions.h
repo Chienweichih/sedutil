@@ -64,6 +64,7 @@ typedef enum _sedutiloption {
 	setPassword,
 	setPassword_SUM,
 	loadPBAimage,
+	printLockingRangeStatus,
 	setLockingRange,
 	revertTPer,
 	revertNoErase,

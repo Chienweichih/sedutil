@@ -91,6 +91,11 @@ public:
          * @param filename the filename of the disk image
          */
 	 uint8_t loadPBA(char * password, char * filename) ;
+         /** User command to print the state of a locking range.
+         * @param lockingrange locking range number
+         * @param Admin1Password password of the locking administrative authority 
+         */
+	 uint8_t printLockingRangeStatus(uint8_t lockingrange, char * Admin1Password);
          /** Change the locking state of a locking range 
          * @param lockingrange The number of the locking range (0 = global)
          * @param lockingstate  the locking state to set

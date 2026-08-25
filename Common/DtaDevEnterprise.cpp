@@ -756,6 +756,14 @@ uint8_t DtaDevEnterprise::listLockingRanges(char * password, int16_t rangeid)
 	return lastRC;
 }
 
+uint8_t DtaDevEnterprise::printLockingRangeStatus(uint8_t lockingrange,
+	char * Admin1Password)
+{
+	LOG(D1) << "Entering DtaDevEnterprise::printLockingRangeStatus";
+	LOG(I) << "printLockingRangeStatus not supported on DtaDevEnterprise";
+	return 1;
+}
+
 uint8_t DtaDevEnterprise::setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
 	char * password)
 {

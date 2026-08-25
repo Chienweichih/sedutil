@@ -128,6 +128,11 @@ public:
 	uint8_t setPassword(char * password, char * userid, char * newpassword);
 	/** dummy code not implemented in the enterprise SSC*/
 	uint8_t setNewPassword_SUM(char * password, char * userid, char * newpassword);
+	/** User command to print the state of a locking range.
+	 * @param lockingrange locking range number
+	 * @param Admin1Password password of the locking administrative authority 
+	 */
+	uint8_t printLockingRangeStatus(uint8_t lockingrange, char * Admin1Password);
 	uint8_t setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
 		char * password);
 	/** dummy code not implemented in the enterprise SSC*/
