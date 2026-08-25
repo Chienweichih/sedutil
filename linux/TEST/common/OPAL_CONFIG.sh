@@ -1,4 +1,9 @@
 #!/bin/bash
+# OPAL_CONFIG.sh
+# Shared TCG Opal token / UID / method constants used by every test script.
+
+[[ -n "${OPAL_CONFIG_SH_INCLUDED:-}" ]] && return
+OPAL_CONFIG_SH_INCLUDED=1
 
 # core spec 3.2.2.3 Tokens
 OPAL_TOKEN_SL="F0"

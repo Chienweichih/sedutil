@@ -1,8 +1,9 @@
 #!/bin/bash
+# Usage: OPAL_CNL_MAIN.sh [DEVICE] [PSID]
 
-source ./linux/TEST/OPAL_UTILS.sh
-source ./linux/TEST/OPAL_CNL_UTILS.sh
-source ./linux/TEST/OPAL_TEST_INIT.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common/OPAL_CNL_UTILS.sh"
+source "$SCRIPT_DIR/common/OPAL_TEST_INIT.sh" "$1" "/dev/nvme0n1"
 
 # 0. Disable Block SID
 PSID="${2:-00000000000000000000000000000000}"

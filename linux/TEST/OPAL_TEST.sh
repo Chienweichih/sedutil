@@ -1,6 +1,8 @@
 #!/bin/bash
+# Usage: OPAL_TEST.sh [DEVICE] [PSID]
 
-source ./linux/TEST/OPAL_TEST_INIT.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common/OPAL_TEST_INIT.sh" "$1" "/dev/nvme0n1"
 
 # 0. Disable Block SID
 PSID="${2:-00000000000000000000000000000000}"
@@ -14,8 +16,8 @@ ADM_PW="5678"
 "$PROG" --setAdmin1Pwd "$MSID" "$ADM_PW" "$DEVICE"
 
 BLOCK_SIZE="512"
-((RANGE_START = "$BLOCK_SIZE" * 1231))
-((RANGE_LENGTH = "$BLOCK_SIZE" * 97))
+((RANGE_START = BLOCK_SIZE * 1231))
+((RANGE_LENGTH = BLOCK_SIZE * 97))
 
 # 2. Setup Locking Range
 "$PROG" --setupLockingRange 8 "$RANGE_START" "$RANGE_LENGTH" "$ADM_PW" "$DEVICE"
@@ -25,16 +27,16 @@ BLOCK_SIZE="512"
 "$PROG" --enablelockingrange 8 "$ADM_PW" "$DEVICE"
 
 # 3. Data Write and Read
-(( BYTE_END = "$BLOCK_SIZE" * ("$RANGE_START" + "$RANGE_LENGTH" - 1) ))
+(( BYTE_END = BLOCK_SIZE * (RANGE_START + RANGE_LENGTH - 1) ))
 hexdump -C -s "$BYTE_END" -n "$BLOCK_SIZE" "$DEVICE" > "$OUTPUT1"
 dd if=/dev/urandom of="$DEVICE" bs="$BLOCK_SIZE" count="$RANGE_LENGTH" seek="$RANGE_START" conv=fsync
 sync
 hexdump -C -s "$BYTE_END" -n "$BLOCK_SIZE" "$DEVICE" > "$OUTPUT2"
 
 echo " ===== BEFORE WRITE ====="
-cat "$OUTPUT1" | head -n 10
+head -n 10 "$OUTPUT1"
 echo " ===== AFTER WRITE ====="
-cat "$OUTPUT2" | head -n 10
+head -n 10 "$OUTPUT2"
 
 if cmp -s "$OUTPUT1" "$OUTPUT2"; then
     echo "[FAIL] $DEVICE is not writable"

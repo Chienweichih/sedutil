@@ -1,8 +1,9 @@
 #!/bin/bash
+# Usage: OPAL_SPF06.sh [DEVICE] [PSID]
 
-source ./linux/TEST/OPAL_CONFIG.sh
-source ./linux/TEST/OPAL_UTILS.sh
-source ./linux/TEST/OPAL_TEST_INIT.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common/OPAL_UTILS.sh"
+source "$SCRIPT_DIR/common/OPAL_TEST_INIT.sh" "$1" "/dev/nvme0n1"
 
 # 0. Disable Block SID
 PSID="${2:-00000000000000000000000000000000}"
@@ -11,7 +12,7 @@ PSID="${2:-00000000000000000000000000000000}"
 # 1. Initial Opal
 "$PROG" --initialsetup "$MSID" "$DEVICE"
 
-# 2. Invoke the Get method on the LockingInfo table’s MaxRanges Column
+# 2. Invoke the Get method on the LockingInfo table's MaxRanges Column
 echo "SubCase 2: Get the MaxRanges on the LockingInfo table"
 
 hexparms=$(concat_multiple \

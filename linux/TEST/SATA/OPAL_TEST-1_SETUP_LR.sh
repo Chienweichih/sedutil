@@ -1,6 +1,8 @@
 #!/bin/bash
+# Usage: OPAL_TEST-1_SETUP_LR.sh [DEVICE]
 
-source ./linux/TEST/SATA/OPAL_TEST_INIT.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../common/OPAL_TEST_INIT.sh" "$1" "/dev/sda"
 
 # 1. Initial Opal
 "$PROG" --initialsetup "$MSID" "$DEVICE"
