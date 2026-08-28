@@ -24,6 +24,9 @@ OPAL_CELLBLK_ER="02" # endRow
 OPAL_CELLBLK_SC="03" # startColumn
 OPAL_CELLBLK_EC="04" # endColumn
 
+# core spec Table 239 Special Purpose UIDs
+OPAL_UID_THISSP="0000000000000001"
+
 # core spec Table 240 Table UIDs
 OPAL_UID_TABLE="00000000"
 OPAL_TD_TABLE="00000001"

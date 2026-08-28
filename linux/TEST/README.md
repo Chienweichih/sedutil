@@ -20,6 +20,7 @@ TEST/
     ├── OPAL_TEST-2_WRITE.sh
     ├── OPAL_TEST-3_READ.sh
     ├── OPAL_TEST-4_REVERT.sh
+    ├── OPAL_TEST-HEARTBEAT.sh
     └── OPAL_TEST-SET_GET_LR.sh
 ```
 
