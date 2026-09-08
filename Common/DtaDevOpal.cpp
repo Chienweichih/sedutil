@@ -918,7 +918,8 @@ uint8_t DtaDevOpal::setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
 	set->addToken(OPAL_TOKEN::ENDLIST);
 	set->addToken(OPAL_TOKEN::ENDNAME);
 	set->addToken(OPAL_TOKEN::ENDLIST);
-	set->complete();
+	// set->complete();
+	set->completeSpecial();
 	if ((lastRC = session->sendCommand(set, response)) != 0) {
 		LOG(E) << "setLockingRange Failed ";
 		delete set;

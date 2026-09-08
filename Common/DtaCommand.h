@@ -79,6 +79,7 @@ public:
      *  @param EOD a bool to signal that command requires the EOD and method status fields 
      */
     void complete(uint8_t EOD = 1);
+    void completeSpecial(uint8_t EOD = 1);
     /** Clears the command buffer and resets the the end of buffer pointer
      * @see bufferpos
      */

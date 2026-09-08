@@ -211,6 +211,54 @@ DtaCommand::complete(uint8_t EOD)
 }
 
 void
+DtaCommand::completeSpecial(uint8_t EOD)
+{
+    LOG(D1) << "Entering DtaCommand::completeSpecial(uint8_t EOD)";
+    if (EOD) {
+        cmdbuf[bufferpos++] = OPAL_TOKEN::ENDOFDATA;
+        cmdbuf[bufferpos++] = OPAL_TOKEN::STARTLIST;
+        cmdbuf[bufferpos++] = 0x00;
+        cmdbuf[bufferpos++] = 0x00;
+        cmdbuf[bufferpos++] = 0x00;
+        cmdbuf[bufferpos++] = OPAL_TOKEN::ENDLIST;
+    }
+    cmdbuf[bufferpos++] = 0x01;
+    cmdbuf[bufferpos++] = 0x02;
+    cmdbuf[bufferpos++] = 0x03;
+    cmdbuf[bufferpos++] = 0x04;
+    cmdbuf[bufferpos++] = 0x05;
+    cmdbuf[bufferpos++] = 0x06;
+    cmdbuf[bufferpos++] = 0x07;
+    cmdbuf[bufferpos++] = 0x08;
+    cmdbuf[bufferpos++] = 0x11;
+    cmdbuf[bufferpos++] = 0x12;
+    cmdbuf[bufferpos++] = 0x13;
+    cmdbuf[bufferpos++] = 0x14;
+    cmdbuf[bufferpos++] = 0x15;
+    cmdbuf[bufferpos++] = 0x16;
+    cmdbuf[bufferpos++] = 0x17;
+    cmdbuf[bufferpos++] = 0x18;
+    cmdbuf[bufferpos++] = 0x88;
+    cmdbuf[bufferpos++] = 0x13;
+    cmdbuf[bufferpos++] = 0x00;
+    cmdbuf[bufferpos++] = 0x00;
+    /* fill in the lengths and add the modulo 4 padding */
+    OPALHeader * hdr;
+    hdr = (OPALHeader *) cmdbuf;
+    hdr->subpkt.length = SWAP32(bufferpos - (sizeof (OPALHeader)));
+    while (bufferpos % 4 != 0) {
+        cmdbuf[bufferpos++] = 0x00;
+    }
+    hdr->pkt.length = SWAP32((bufferpos - sizeof (OPALComPacket))
+                             - sizeof (OPALPacket));
+    hdr->cp.length = SWAP32(bufferpos - sizeof (OPALComPacket));
+	if (bufferpos > MAX_BUFFER_LENGTH) {
+		LOG(D1) << " Standard Buffer Overrun " << bufferpos;
+		exit(EXIT_FAILURE);
+	}
+}
+
+void
 DtaCommand::changeInvokingUid(std::vector<uint8_t> Invoker)
 {
     LOG(D1) << "Entering DtaCommand::changeInvokingUid()";
